@@ -6,11 +6,13 @@ import nltk
 
 nltk.download()
 
+import collections
 import random
 import pandas as pd
 from nltk.corpus import stopwords
 from nltk.corpus import wordnet
 from nltk.stem import WordNetLemmatizer
+from nltk.metrics import *
 
 # Init the Wordnet Lemmatizer
 lemmatizer = WordNetLemmatizer()
@@ -104,6 +106,20 @@ classifier = nltk.NaiveBayesClassifier.train(train_set)
 print(nltk.classify.accuracy(classifier, test_set))
 
 classifier.show_most_informative_features(20)
+
+"""Measuring **Precision and Recall** of a classifier"""
+
+refsets = collections.defaultdict(set)
+testsets = collections.defaultdict(set)
+
+for i, (feature, label) in enumerate(test_set):
+    refsets[label].add(i)
+    observed = classifier.classify(feature)
+    testsets[observed].add(i)
+
+for category in data.keys():
+  print(category,'precision :',precision(refsets[category], testsets[category]))
+  print(category,'recall :',recall(refsets[category], testsets[category]))
 
 """**OUTPUTS**"""
 
