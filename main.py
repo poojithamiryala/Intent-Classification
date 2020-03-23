@@ -1,7 +1,3 @@
-
-
-
-
 import nltk
 
 nltk.download()
@@ -107,19 +103,28 @@ print(nltk.classify.accuracy(classifier, test_set))
 
 classifier.show_most_informative_features(20)
 
-"""Measuring **Precision and Recall** of a classifier"""
+"""Measuring **Precision,Recall,F-Measure** of a classifier.Finding **Confusion matrix**"""
 
-refsets = collections.defaultdict(set)
-testsets = collections.defaultdict(set)
+actual_set  = collections.defaultdict(set)
+predicted_set  = collections.defaultdict(set)
+# cm here refers to confusion matrix
+actual_set_cm = []
+predicted_set_cm = []
 
 for i, (feature, label) in enumerate(test_set):
-    refsets[label].add(i)
-    observed = classifier.classify(feature)
-    testsets[observed].add(i)
+    actual_set[label].add(i)
+    actual_set_cm.append(label)
+    predicted_label = classifier.classify(feature)
+    predicted_set[predicted_label].add(i)
+    predicted_set_cm.append(predicted_label)
 
 for category in data.keys():
-  print(category,'precision :',precision(refsets[category], testsets[category]))
-  print(category,'recall :',recall(refsets[category], testsets[category]))
+  print(category,'precision :',precision(actual_set[category], predicted_set[category]))
+  print(category,'recall :',recall(actual_set[category], predicted_set[category]))
+  print(category,'f-measure :',f_measure(actual_set[category], predicted_set[category]))
+
+confusion_matrix = ConfusionMatrix(actual_set_cm, predicted_set_cm)
+print(confusion_matrix)
 
 """**OUTPUTS**"""
 
